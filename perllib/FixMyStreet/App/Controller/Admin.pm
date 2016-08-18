@@ -860,13 +860,19 @@ sub report_edit_location : Private {
 
     if ( $c->stash->{latitude} != $problem->latitude || $c->stash->{longitude} != $problem->longitude ) {
         $c->log->debug("lat/lon have changed");
+        $c->log->debug("stash->{bodies_to_list}: " . Dumper($c->stash->{bodies_to_list}));
+        delete $c->stash->{prefetched_all_areas};
+        delete $c->stash->{all_areas};
+        delete $c->stash->{fetch_all_areas};
+        delete $c->stash->{all_areas_mapit};
+        $c->forward('/council/load_and_check_areas');
         $c->forward('/report/new/setup_categories_and_bodies');
         my %allowed_bodies = map { $_ => 1 } @{$problem->bodies_str_ids};
-        $c->log->debug(Dumper(%allowed_bodies));
-        my @new_bodies = keys %{ $c->stash->{bodies} };
-        $c->log->debug(Dumper(@new_bodies));
+        $c->log->debug("allowed_bodies: " . Dumper(\%allowed_bodies));
+        my @new_bodies = @{$c->stash->{bodies_to_list}};
+        $c->log->debug("new_bodies: " . Dumper(\@new_bodies));
         my $bodies_match = grep { exists( $allowed_bodies{$_} ) } @new_bodies;
-        $c->log->debug(Dumper($bodies_match));
+        $c->log->debug("bodies_match: " . Dumper($bodies_match));
         return unless $bodies_match;
         $c->log->debug("bodies_match is true");
         $problem->latitude($c->stash->{latitude});
