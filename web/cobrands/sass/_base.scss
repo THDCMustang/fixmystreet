@@ -399,6 +399,7 @@ label{
 .problem-inspector-fields {
   select {
     height: 2.4em; // match text inputs
+    -webkit-appearance: menulist-button; // so it's the right height in Safari
   }
 
   p.left,
