@@ -376,7 +376,7 @@ sub check_has_permission_to : Private {
 
     my $bodies = $c->stash->{problem}->bodies_str;
 
-    $c->detach('/page_error_403_access_denied', [])
+    $c->detach('/page_error_403_access_denied', [ _("Sorry, you don't have permission to do that.") ] )
         unless $c->user_exists && $c->user->has_permission_to($permission, $bodies);
 };
 
