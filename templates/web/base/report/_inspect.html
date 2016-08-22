@@ -4,11 +4,11 @@
     <div class="problem-inspector-fields clearfix">
       <form id="report_inspect_form" method="post" action="[% c.uri_for( '/report', problem.id, 'inspect' ) %]">
         <p class="left">
-          <label for="problem_id">Report ID:</label>
+          <label for="problem_id">[% loc('Report ID:') %]</label>
           <input type="text" readonly id="problem_id" value="[% problem.id %]">
         </p>
         <p class="right">
-          <label for="problem_priority">Priority:</label>
+          <label for="problem_priority">[% loc('Priority:') %]</label>
           <select name="priority" id="problem_priority">
             <option value="" [% 'selected' UNLESS problem.get_extra_metadata('priority') %]>-</option>
             [% FOREACH priority IN priorities %]
@@ -17,7 +17,7 @@
           </select>
         </p>
         <p class="left">
-          <label for="state">State:</label>
+          <label for="state">[% loc('State:') %]</label>
             [%# XXX this is duplicated from admin/report_edit.html, should be refactored %]
           <select name="state" id="state">
             [% FOREACH group IN state_groups %]
@@ -30,7 +30,7 @@
           </select>
         </p>
         <p class="right">
-          <label for="category">Category:</label>
+          <label for="category">[% loc('Category:') %]</label>
             [%# XXX this is duplicated from admin/report_edit.html, should be refactored %]
           <select name="category" id="category">
             [% IF NOT problem.category OR NOT categories.grep(problem.category).size %]
@@ -49,34 +49,34 @@
         </p>
         <p class="left">
           [% SET local_coords = problem.local_coords; %]
-          <label for="problem_easting">Easting:</label>
+          <label for="problem_easting">[% loc('Easting:') %]</label>
           <input type="text" name="easting" id="problem_easting" value="[% local_coords.0 IF local_coords %]">
           <input type="hidden" name="longitude" value="[% problem.longitude %]">
         </p>
         <p class="right">
-          <label for="problem_northing">Northing:</label>
+          <label for="problem_northing">[% loc('Northing:') %]</label>
           <input type="text" name="northing" id="problem_northing" value="[% local_coords.1 IF local_coords %]">
           <input type="hidden" name="latitude" value="[% problem.latitude %]">
         </p>
         <p style="clear:both;">
-          <a href="#" id="geolocate_link">Use my current location</a>,
-          or drag the pin on the map &raquo;
+          <a href="#" id="geolocate_link">[% loc('Use my current location') %]</a>,
+          [% loc('or drag the pin on the map') %] &raquo;
         </p>
         <p>
-          <label for="detailed_information">Detailed problem location:</label>
+          <label for="detailed_information">[% loc('Detailed problem location:') %]</label>
           <textarea rows="2" name="detailed_location">[% problem.get_extra_metadata('detailed_location') | html %]</textarea>
         </p>
         <p>
-          <label for="detailed_information">Detailed problem information:</label>
+          <label for="detailed_information">[% loc('Detailed problem information:') %]</label>
           <textarea rows="2" name="detailed_information">[% problem.get_extra_metadata('detailed_information') | html %]</textarea>
         </p>
         <p>
-          <label for="traffic_information">Traffic management information:</label>
+          <label for="traffic_information">[% loc('Traffic management information:') %]</label>
           <textarea rows="2" name="traffic_information">[% problem.get_extra_metadata('traffic_information') | html %]</textarea>
         </p>
         <p>
           <input type="hidden" name="token" value="[% csrf_token %]">
-          <input type="submit" value="Save changes" name="save" />
+          <input type="submit" value="[% loc('Save changes') %]" name="save" />
         </p>
       </form>
     </div>
