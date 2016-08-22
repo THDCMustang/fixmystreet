@@ -141,7 +141,8 @@ var fixmystreet = fixmystreet || {};
       // Handle a single report pin being moved by dragging it on the map.
       // pin_moved_callback is called with a new EPSG:4326 OpenLayers.LonLat if
       // the user drags the pin and confirms its new location.
-      admin_drag: function(pin_moved_callback) {
+      admin_drag: function(pin_moved_callback, confirm_change) {
+          confirm_change = confirm_change || false;
           var original_lonlat;
           var drag = new OpenLayers.Control.DragFeature( fixmystreet.markers, {
               onStart: function(feature, e) {
@@ -155,7 +156,7 @@ var fixmystreet = fixmystreet || {};
                       fixmystreet.map.getProjectionObject(),
                       new OpenLayers.Projection("EPSG:4326")
                   );
-                  if (window.confirm( translation_strings.correct_position ) ) {
+                  if ((confirm_change && window.confirm(translation_strings.correct_position)) || !confirm_change) {
                       // Let the callback know about the newly confirmed position
                       pin_moved_callback(lonlat);
                   } else {
@@ -285,7 +286,8 @@ var fixmystreet = fixmystreet || {};
             $("form#report_inspect_form input[name=easting]").val(bng.x.toFixed(1));
             $("form#report_inspect_form input[name=latitude]").val(lonlat.y);
             $("form#report_inspect_form input[name=longitude]").val(lonlat.x);
-        });
+        },
+        false);
     }
 
     function onload() {
