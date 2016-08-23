@@ -834,44 +834,47 @@ sub categories_for_point : Private {
 sub templates : Path('templates') : Args(0) {
     my ( $self, $c ) = @_;
 
-    $c->detach( '/page_error_404_not_found' )
-        unless $c->cobrand->moniker eq 'zurich';
-
     my $user = $c->user;
 
-    $self->templates_for_body($c, $user->from_body );
+    if ($user->is_superuser) {
+        $c->forward('fetch_all_bodies');
+        $c->stash->{template} = 'admin/templates_index.html';
+    } elsif ( $user->from_body ) {
+        $c->forward('load_template_body', [ $user->from_body->id ]);
+        $c->res->redirect( $c->uri_for( 'templates', $c->stash->{body}->id ) );
+    } else {
+        $c->detach( '/page_error_404_not_found' );
+    }
 }
 
 sub templates_view : Path('templates') : Args(1) {
     my ($self, $c, $body_id) = @_;
 
-    $c->detach( '/page_error_404_not_found' )
-        unless $c->cobrand->moniker eq 'zurich';
+    $c->forward('load_template_body', [ $body_id ]);
 
-    # e.g. for admin
+    my @templates = $c->stash->{body}->response_templates->search(
+        undef,
+        {
+            order_by => 'title'
+        }
+    );
 
-    my $body = $c->model('DB::Body')->find($body_id)
-        or $c->detach( '/page_error_404_not_found' );
+    $c->stash->{response_templates} = \@templates;
 
-    $self->templates_for_body($c, $body);
+    $c->stash->{template} = 'admin/templates.html';
 }
 
 sub template_edit : Path('templates') : Args(2) {
     my ( $self, $c, $body_id, $template_id ) = @_;
 
-    $c->detach( '/page_error_404_not_found' )
-        unless $c->cobrand->moniker eq 'zurich';
-
-    my $body = $c->model('DB::Body')->find($body_id)
-        or $c->detach( '/page_error_404_not_found' );
-    $c->stash->{body} = $body;
+    $c->forward('load_template_body', [ $body_id ]);
 
     my $template;
     if ($template_id eq 'new') {
-        $template = $body->response_templates->new({});
+        $template = $c->stash->{body}->response_templates->new({});
     }
     else {
-        $template = $body->response_templates->find( $template_id )
+        $template = $c->stash->{body}->response_templates->find( $template_id )
             or $c->detach( '/page_error_404_not_found' );
     }
 
@@ -884,7 +887,7 @@ sub template_edit : Path('templates') : Args(2) {
             $template->update_or_insert;
         }
 
-        $c->res->redirect( $c->uri_for( 'templates', $body->id ) );
+        $c->res->redirect( $c->uri_for( 'templates', $c->stash->{body}->id ) );
     }
 
     $c->stash->{response_template} = $template;
@@ -892,22 +895,18 @@ sub template_edit : Path('templates') : Args(2) {
     $c->stash->{template} = 'admin/template_edit.html';
 }
 
+sub load_template_body : Private {
+    my ($self, $c, $body_id) = @_;
 
-sub templates_for_body {
-    my ( $self, $c, $body ) = @_;
+    unless ( $c->user->is_superuser || ( $c->user->from_body && $c->user->from_body->id eq $body_id && $c->user->has_permission_to('template_edit', $body_id) ) ) {
+        $c->detach( '/page_error_404_not_found' );
+    }
 
-    $c->stash->{body} = $body;
+    # Regular users can only view their own body's templates
+    $body_id = $c->user->from_body->id unless $c->user->is_superuser;
 
-    my @templates = $body->response_templates->search(
-        undef,
-        {
-            order_by => 'title'
-        }
-    );
-
-    $c->stash->{response_templates} = \@templates;
-
-    $c->stash->{template} = 'admin/templates.html';
+    $c->stash->{body} = $c->model('DB::Body')->find($body_id)
+        or $c->detach( '/page_error_404_not_found' );
 }
 
 sub users: Path('users') : Args(0) {
