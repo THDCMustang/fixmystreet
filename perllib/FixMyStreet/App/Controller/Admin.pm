@@ -891,6 +891,7 @@ sub template_edit : Path('templates') : Args(2) {
 
     if ($c->req->method eq 'POST') {
         if ($c->get_param('delete_template') eq _("Delete template")) {
+            $template->contact_response_templates->delete_all;
             $template->delete;
         } else {
             $template->title( $c->get_param('title') );
