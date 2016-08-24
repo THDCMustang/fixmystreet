@@ -878,13 +878,36 @@ sub template_edit : Path('templates') : Args(2) {
             or $c->detach( '/page_error_404_not_found' );
     }
 
+    $c->forward('display_contacts');
+    my @contacts = $template->contacts->all;
+    my @live_contacts = $c->stash->{live_contacts}->all;
+    my %active_contacts = map { $_->id => 1 } @contacts;
+    my @all_contacts = map { {
+        id => $_->id,
+        category => $_->category,
+        active => %active_contacts->{$_->id},
+    } } @live_contacts;
+    $c->stash->{contacts} = \@all_contacts;
+
     if ($c->req->method eq 'POST') {
         if ($c->get_param('delete_template') eq _("Delete template")) {
             $template->delete;
         } else {
             $template->title( $c->get_param('title') );
-            $template->text ( $c->get_param('text') );
+            $template->text( $c->get_param('text') );
+            $template->auto_response( $c->get_param('auto_response') ? 1 : 0 );
             $template->update_or_insert;
+
+            my @live_contact_ids = map { $_->id } @live_contacts;
+            my @new_contact_ids = grep { $c->get_param("contacts[$_]") ? 1 : undef } @live_contact_ids;
+            $template->contact_response_templates->search({
+                contact_id => { '!=' => \@new_contact_ids },
+            })->delete;
+            foreach my $contact_id (@new_contact_ids) {
+                $template->contact_response_templates->find_or_create({
+                    contact_id => $contact_id,
+                });
+            }
         }
 
         $c->res->redirect( $c->uri_for( 'templates', $c->stash->{body}->id ) );
