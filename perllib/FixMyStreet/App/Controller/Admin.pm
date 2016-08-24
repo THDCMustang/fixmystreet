@@ -898,7 +898,12 @@ sub template_edit : Path('templates') : Args(2) {
 sub load_template_body : Private {
     my ($self, $c, $body_id) = @_;
 
-    unless ( $c->user->is_superuser || ( $c->user->from_body && $c->user->from_body->id eq $body_id && $c->user->has_permission_to('template_edit', $body_id) ) ) {
+    my $zurich_user = $c->user->from_body && $c->cobrand->moniker eq 'zurich';
+    my $has_permission = $c->user->from_body &&
+                         $c->user->from_body->id eq $body_id &&
+                         $c->user->has_permission_to('template_edit', $body_id);
+
+    unless ( $c->user->is_superuser || $zurich_user || $has_permission ) {
         $c->detach( '/page_error_404_not_found' );
     }
 
