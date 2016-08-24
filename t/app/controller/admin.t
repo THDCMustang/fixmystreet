@@ -1175,6 +1175,7 @@ FixMyStreet::override_config {
                 "permissions[user_manage_permissions]" => undef,
                 "permissions[user_assign_body]" => undef,
                 "permissions[user_assign_areas]" => undef,
+                "permissions[template_edit]" => undef,
             },
             changes => {
                 name => 'Changed User',
@@ -1205,6 +1206,7 @@ FixMyStreet::override_config {
                 "permissions[user_manage_permissions]" => undef,
                 "permissions[user_assign_body]" => undef,
                 "permissions[user_assign_areas]" => undef,
+                "permissions[template_edit]" => undef,
             },
             changes => {
                 email => 'changed@example.com',
@@ -1235,6 +1237,7 @@ FixMyStreet::override_config {
                 "permissions[user_manage_permissions]" => undef,
                 "permissions[user_assign_body]" => undef,
                 "permissions[user_assign_areas]" => undef,
+                "permissions[template_edit]" => undef,
             },
             changes => {
                 body => $southend->id,
@@ -1265,6 +1268,7 @@ FixMyStreet::override_config {
                 "permissions[user_manage_permissions]" => undef,
                 "permissions[user_assign_body]" => undef,
                 "permissions[user_assign_areas]" => undef,
+                "permissions[template_edit]" => undef,
             },
             changes => {
                 flagged => 'on',
@@ -1295,6 +1299,7 @@ FixMyStreet::override_config {
                 "permissions[user_manage_permissions]" => undef,
                 "permissions[user_assign_body]" => undef,
                 "permissions[user_assign_areas]" => undef,
+                "permissions[template_edit]" => undef,
             },
             changes => {
                 flagged => undef,
@@ -1325,6 +1330,7 @@ FixMyStreet::override_config {
                 "permissions[user_manage_permissions]" => undef,
                 "permissions[user_assign_body]" => undef,
                 "permissions[user_assign_areas]" => undef,
+                "permissions[template_edit]" => undef,
             },
             changes => {
                 is_superuser => 'on',
@@ -1343,6 +1349,7 @@ FixMyStreet::override_config {
                 "permissions[user_manage_permissions]",
                 "permissions[user_assign_body]",
                 "permissions[user_assign_areas]",
+                "permissions[template_edit]",
             ],
             log_count => 5,
             log_entries => [qw/edit edit edit edit edit/],
@@ -1375,6 +1382,7 @@ FixMyStreet::override_config {
                 "permissions[user_manage_permissions]" => undef,
                 "permissions[user_assign_body]" => undef,
                 "permissions[user_assign_areas]" => undef,
+                "permissions[template_edit]" => undef,
             },
             log_count => 5,
             log_entries => [qw/edit edit edit edit edit/],

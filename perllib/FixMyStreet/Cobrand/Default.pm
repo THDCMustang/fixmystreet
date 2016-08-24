@@ -655,6 +655,8 @@ sub admin_pages {
          'report_edit' => [undef, undef],
          'update_edit' => [undef, undef],
          'abuse_edit'  => [undef, undef],
+         'templates'  => [undef, undef],
+         'template_edit'  => [undef, undef],
     };
 
     # There are some pages that only super users can see
@@ -710,6 +712,9 @@ sub available_permissions {
             user_manage_permissions => _("Edit other users' permissions"),
             user_assign_body => _("Grant access to the admin"),
             user_assign_areas => _("Assign users to areas"), # future use
+        },
+        _("Bodies") => {
+            template_edit => _("Add/edit response templates"),
         },
     };
 }
