@@ -885,7 +885,7 @@ sub template_edit : Path('templates') : Args(2) {
     my @all_contacts = map { {
         id => $_->id,
         category => $_->category,
-        active => %active_contacts->{$_->id},
+        active => $active_contacts{$_->id},
     } } @live_contacts;
     $c->stash->{contacts} = \@all_contacts;
 
