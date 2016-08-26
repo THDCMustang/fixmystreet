@@ -76,5 +76,15 @@ with 'FixMyStreet::Roles::Extra';
 
 __PACKAGE__->many_to_many( response_templates => 'contact_response_templates', 'response_template' );
 
+sub get_metadata_for_input {
+    my $self = shift;
+    my $id_field = $self->id_field;
+    return [ grep { $_->{code} !~ /^(easting|northing|$id_field)$/ } @{$self->get_extra_fields} ];
+}
+
+sub id_field {
+    my $self = shift;
+    return $self->get_extra_metadata('id_field') || 'fixmystreet_id';
+}
 
 1;
