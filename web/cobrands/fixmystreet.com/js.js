@@ -27,3 +27,25 @@ $(function(){
     }
 
 });
+
+function openFirstPanel(){
+  $('.accordian .accordian-item:first-child .accordian-content').slideDown();
+  $('.accordian .accordian-item:first-child .accordian-switch').toggleClass('accordian-switch--open');
+}
+
+
+$(function(){
+
+  var allPanels = $('.accordian > .accordian-item .accordian-content').hide();
+  var allSwitches = $('.accordian .accordian-switch');
+  openFirstPanel();
+
+  $('.accordian > .accordian-item a').click(function() {
+    allPanels.slideUp();
+    allSwitches.removeClass('accordian-switch--open');
+    $(this).toggleClass('accordian-switch--open');
+    $(this).next().slideDown();
+    return false;
+  });
+
+});
